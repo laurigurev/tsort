@@ -2,6 +2,8 @@
 
 #define sizeofbits(x) (sizeof(x) * 8)
 
+namespace tsort {
+
 template <size_t N>
 struct bitset2 {
         constexpr bitset2() noexcept : counter(0)
@@ -85,3 +87,5 @@ struct bitset2 {
         size_t data[(N / sizeofbits(size_t)) + 1];
         size_t counter;
 };
+
+} // namespace tsor
