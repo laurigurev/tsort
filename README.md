@@ -12,4 +12,4 @@ Step 4. pass on these parameters to function tsort:tsort(...)
 
 ## Notice
 
-This function uses [this](https://en.wikipedia.org/wiki/Topological_sorting#Kahn.27s_algorithm) sort. If your graph is not acyclical, tsort funtion is not going to cathc it.
+This function uses [this](https://en.wikipedia.org/wiki/Topological_sorting#Kahn.27s_algorithm) sort. If your graph is not acyclical, tsort funtion is not going to catch it.
