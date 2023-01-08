@@ -6,7 +6,6 @@ template <size_t N>
 struct bitset2 {
         constexpr bitset2() noexcept : counter(0)
         {
-                // printf("bitset2::bitset2() size %llu\n", (N / sizeofbits(size_t)) + 1);
                 memset(data, 0, sizeof(size_t));
         }
         constexpr bool test(const size_t i) noexcept
@@ -21,14 +20,13 @@ struct bitset2 {
                 if (counter == N) return true;
                 return false;
         }
-        constexpr bool any()
- noexcept        {
+        constexpr bool any() noexcept
+        {
                 if (counter) return true;
                 return false;
         }
         constexpr bool none() noexcept
         {
-                // printf("bitset2::none() counter %llu\n", counter);
                 if (counter == 0) return true;
                 return false;
         }
@@ -46,7 +44,6 @@ struct bitset2 {
                 const size_t b = (i - a) / sizeofbits(size_t);
                 data[b] |= (1 << a);
                 counter++;
-                // printf("bitset2::set() i %llu, b %llu, a %llu counter %llu\n", i, b, a, counter);
         }
         constexpr void reset(const size_t i) noexcept
         {
@@ -54,8 +51,6 @@ struct bitset2 {
                 const size_t b = (i - a) / sizeofbits(size_t);
                 data[b] ^= (1 << a);
                 if (counter) counter--;
-                // printf("bitset2::reset() i %llu, b %llu, a %llu, counter %llu", i, b, a, counter);
-                // printf(", data[%llu] %llu\n", b, data[b]);
         }
         constexpr void flip() noexcept
         {
