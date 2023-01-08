@@ -1,20 +1,17 @@
 #include <array>
-#include <bitset>
+// #include <bitset>
 #include <cstdio>
 #include <vector>
-// #include <functional>
-// #include <algorithm>
+#include "bitset2.hpp"
 
 struct edge {
         int src;
         int dst;
 };
 
-// int tsort();
-
 int main()
 {
-        printf("Hello, world! This is a Topological Sort, aka. tsort\n\n");
+        printf("Hello, world! This is a Topological Sort, aka. tsort\n");
 
         std::vector<edge> edges = {
             {8,  9 },
@@ -31,8 +28,8 @@ int main()
         std::vector<int> nodes = {2, 3, 5, 7, 8, 9, 10, 11};
 
         // construct bitmaps that signifies relationship inside a graph
-        std::array<std::bitset<16>, 16> input;
-        std::array<std::bitset<16>, 16> output;
+        std::array<bitset2<16>, 16> input;
+        std::array<bitset2<16>, 16> output;
         for (edge e : edges) {
                 // for destination node set into map all the nodes
                 // that input into it
@@ -41,6 +38,8 @@ int main()
                 // source ouputs to
                 output[e.src].set(e.dst);
         }
+
+        // for (auto a : output) printf("%llu\n", a.data[0]);
 
         for (auto n = nodes.begin(); n != nodes.end();) {
                 if (input[*n].any()) {
@@ -52,8 +51,8 @@ int main()
 
         std::vector<int> sorted;
         sorted.reserve(16);
-        // constainer that saves all the nodes on the same level;
-        std::bitset<16> level;
+        // container that saves all the nodes on the same level;
+        bitset2<16> level;
         for (int i = 0; i < nodes.size();) {
                 int n = nodes[i];
                 
@@ -69,15 +68,19 @@ int main()
 
                 int len = output[n].count();
                 while (len--) {
-                        int m = 0;
-                        while (m < output[n].size() && !output[n].test(m)) ++m;
+                        int m = static_cast<int>(output[n].find_first());
 
+                        // printf("n %i, m %i, input %llu\n", n, m, input[m].data[0]);
+                        // printf("input[%i]  ", m); input[m].reset(n);
+                        // printf("output[%i] ", n); output[n].reset(m);
+                        // printf("n %i, m %i, output %llu\n", n, m, output[n].data[0]);
+                        // printf("n %i, m %i, input.none() %i\n", n, m, input[m].none());
                         input[m].reset(n);
                         output[n].reset(m);
-                        
                         if (input[m].none()) {
                                 nodes.push_back(m);
                                 level.set(m);
+                                // printf("nodes.push_back(%i)\n", m);
                         }
                 }
         }
