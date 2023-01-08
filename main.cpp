@@ -1,7 +1,9 @@
+#include <array>
+#include <bitset>
 #include <cstdio>
 #include <vector>
 // #include <functional>
-#include <algorithm>
+// #include <algorithm>
 
 struct edge {
         int src;
@@ -28,46 +30,61 @@ int main()
 
         std::vector<int> nodes = {2, 3, 5, 7, 8, 9, 10, 11};
 
-        std::sort(edges.begin(), edges.end(), [](const edge e0, const edge e1) { return e0.dst < e1.dst; });
-
-        printf("Sorted edges\n");
+        // construct bitmaps that signifies relationship inside a graph
+        std::array<std::bitset<16>, 16> input;
+        std::array<std::bitset<16>, 16> output;
         for (edge e : edges) {
-                printf("{%i, %i}\n", e.src, e.dst);
+                // for destination node set into map all the nodes
+                // that input into it
+                input[e.dst].set(e.src);
+                // for source node set into map all the nodes that
+                // source ouputs to
+                output[e.src].set(e.dst);
         }
 
-        std::vector<int> empty = {3, 5, 7};
+        for (auto n = nodes.begin(); n != nodes.end();) {
+                if (input[*n].any()) {
+                        nodes.erase(n);
+                        continue;
+                }
+                n++;
+        }
+
         std::vector<int> sorted;
-        sorted.reserve(9);
+        sorted.reserve(16);
+        // constainer that saves all the nodes on the same level;
+        std::bitset<16> level;
+        for (int i = 0; i < nodes.size();) {
+                int n = nodes[i];
+                
+                if (level.test(n)) {
+                        level ^= level;
+                        sorted.push_back(-1);
+                }
+                
+                sorted.push_back(n);
+                nodes.erase(nodes.begin());
+                
+                if (!output[n].any()) continue;
 
-        for (int i = 0; i < empty.size();) {
-                int tmp = empty[i];
-                empty.erase(empty.begin());
-                sorted.push_back(tmp);
+                int len = output[n].count();
+                while (len--) {
+                        int m = 0;
+                        while (m < output[n].size() && !output[n].test(m)) ++m;
 
-                for (int j = 0; j < edges.size();) {
-                        if (edges[j].src == tmp) {
-                                int m = edges[j].dst;
-                                edges.erase(edges.begin() + j);
-                                for (edge e : edges) {
-                                        if (e.dst == m) {
-                                                m = -1;
-                                                break;
-                                        }
-                                }
-                                if (m != -1) empty.push_back(m);
+                        input[m].reset(n);
+                        output[n].reset(m);
+                        
+                        if (input[m].none()) {
+                                nodes.push_back(m);
+                                level.set(m);
                         }
-                        else j++;
                 }
         }
 
-        printf("\nSorted nodes\n");
         for (int s : sorted) {
-                printf("%i ", s);
-        }
-
-        if (edges.size()) {
-                printf("Some edges left!\n");
-                return 1;
+                if (s == -1) printf("\n");
+                else printf("%i ", s);
         }
 
         return 0;
