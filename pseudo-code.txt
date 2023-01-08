@@ -1,0 +1,17 @@
+sort edges by dst node
+sort nodes
+copy nodes to empty
+filter out non empty nodes from empty using edges
+while not nodes.empty()
+	n in empty
+	remove n in empty
+	push n to sorted
+	for each edge from n to m
+		remove edge from graph
+		if m has no edges
+			push m to empty
+
+if not edges.empty()
+	error
+else
+	return sorted
